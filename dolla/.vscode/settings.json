@@ -1,0 +1,15 @@
+{
+    "emmet.excludeLanguages": [
+
+        "markdown"
+    ],
+
+
+    "emmet.includeLanguages": {
+        "javascript": "javascriptreact"
+      },
+    "emmet.triggerExpansionOnTab": true,
+    "files.autoSave": "afterDelay",
+    "editor.defaultFormatter": "rvest.vs-code-prettier-eslint",
+    "editor.formatOnSave": true
+}

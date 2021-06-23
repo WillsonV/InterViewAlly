@@ -1,33 +1,34 @@
-import React from 'react';
-import Paper from '@material-ui/core/Paper';
-import { makeStyles } from '@material-ui/core/styles';
-import Grid from '@material-ui/core/Grid';
-import Avatar from '@material-ui/core/Avatar';
-import Typography from '@material-ui/core/Typography';
-import './payment.css'
-import { useState, useReducer, useEffect } from 'react';
-import { Link, useHistory } from 'react-router-dom';
-import CartTable from './CartTable';
-import './CartTable.css'
-import { useSelector } from 'react-redux';
+import React from "react";
+import Paper from "@material-ui/core/Paper";
+import { makeStyles } from "@material-ui/core/styles";
+import Grid from "@material-ui/core/Grid";
+import Avatar from "@material-ui/core/Avatar";
+import Typography from "@material-ui/core/Typography";
+import "./payment.css";
+import { useState, useReducer, useEffect } from "react";
+import { Link, useHistory } from "react-router-dom";
+import CartTable from "./CartTable";
+import "./CartTable.css";
+import { useSelector } from "react-redux";
 import CurrencyFormat from "react-currency-format";
-import { useStripe } from '@stripe/react-stripe-js';
-import { useElements } from '@stripe/react-stripe-js';
-import { CardElement, Elements } from '@stripe/react-stripe-js';
+import { useStripe } from "@stripe/react-stripe-js";
+import { useElements } from "@stripe/react-stripe-js";
+import { CardElement, Elements } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
-import './paymentStyle.css'
+import "./paymentStyle.css";
 
-import axios from '../../Axios/Axios';
-import { FaJediOrder } from 'react-icons/fa';
-import { auth, db } from '../../firebase';
+import axios from "../../Axios/Axios";
+import { FaJediOrder } from "react-icons/fa";
+import { auth, db } from "../../firebase";
 
-
-const stripePromise = loadStripe("pk_test_51HQZYoHpBq5C6hEJaPFfNKUQf1kE6zfcgZfQdB9bBu1TqsKQJB5KTUlM2xFJr3T5tfJvOWHdpBa8IlPrkzscPZZZ00yPL4ne0F");
+const stripePromise = loadStripe(
+  "pk_test_51HQZYoHpBq5C6hEJaPFfNKUQf1kE6zfcgZfQdB9bBu1TqsKQJB5KTUlM2xFJr3T5tfJvOWHdpBa8IlPrkzscPZZZ00yPL4ne0F"
+);
 
 const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
-    overflow: 'hidden',
+    overflow: "hidden",
     padding: theme.spacing(0, 3),
   },
   paper: {
@@ -36,7 +37,6 @@ const useStyles = makeStyles((theme) => ({
     padding: theme.spacing(2),
   },
 }));
-
 
 const CARD_OPTIONS = {
   iconStyle: "solid",
@@ -49,17 +49,17 @@ const CARD_OPTIONS = {
       fontSize: "16px",
       fontSmoothing: "antialiased",
       ":-webkit-autofill": {
-        color: "#fce883"
+        color: "#fce883",
       },
       "::placeholder": {
-        color: "#87bbfd"
-      }
+        color: "#87bbfd",
+      },
     },
     invalid: {
       iconColor: "#ffc7ee",
-      color: "#ffc7ee"
-    }
-  }
+      color: "#ffc7ee",
+    },
+  },
 };
 
 const CardField = ({ onChange }) => (
@@ -76,7 +76,7 @@ const Field = ({
   required,
   autoComplete,
   value,
-  onChange
+  onChange,
 }) => (
   <div className="FormRow">
     <label htmlFor={id} className="FormRowLabel">
@@ -132,17 +132,11 @@ const ResetButton = ({ onClick }) => (
   </button>
 );
 
-
-
-
-
-
 function Cart() {
-
-   const history = useHistory();
+  const history = useHistory();
   var user = auth.currentUser;
-  console.log("In cart userName>>" );
-   console.log(user);
+  console.log("In cart userName>>");
+  console.log(user);
 
   const stripe = useStripe();
   const elements = useElements();
@@ -153,60 +147,53 @@ function Cart() {
   const [billingDetails, setBillingDetails] = useState({
     email: "",
     phone: "",
-    name: ""
+    name: "",
   });
   const [clientSecret, setClientSecret] = useState(true);
-    const [clientSecret2, setClientSecret2] = useState('Not willson');
-  const TotalPrice = useSelector(state => state.total);
-   const [succeeded, setSucceeded] = useState(false);
-  
-  const BasketLength = useSelector(state => state.TotalCartItems);
-   const Basket = useSelector(state => state.addedItems);
+  const [clientSecret2, setClientSecret2] = useState("Not willson");
+  const TotalPrice = useSelector((state) => state.total);
+  const [succeeded, setSucceeded] = useState(false);
+
+  const BasketLength = useSelector((state) => state.TotalCartItems);
+  const Basket = useSelector((state) => state.addedItems);
 
   console.log("BASKET");
-   console.log(Basket);
-  
-     useEffect(() => {
-      // generate the special stripe secret which allows us to charge a customer
-        const getClientSecret = async () => {
-            const response = await axios({
-                method: 'post',
-                // Stripe expects the total in a currencies subunits
-                url: `/payments/create?total=${TotalPrice * 100}`
-            })
-            setClientSecret(response.data.clientSecret)
-        }
+  console.log(Basket);
 
-        getClientSecret().then( ( response ) => {
-                setClientSecret(response.data.clientSecret)
-            } )
-            .catch( () => {
-                
-            });
-      
-      
-      
-      
-      const getClientSecret2 = async () => {
-            const response = await axios({
-                method: 'get',
-                // Stripe expects the total in a currencies subunits
-                url: `/willson`
-            })
-            setClientSecret2(response.data)
-      }
-      getClientSecret2().then( ( response ) => {
-               // setClientSecret2(response.data.clientSecret)
-            } )
-            .catch( () => {
-                
-            });
+  useEffect(() => {
+    // generate the special stripe secret which allows us to charge a customer
+    const getClientSecret = async () => {
+      const response = await axios({
+        method: "post",
+        // Stripe expects the total in a currencies subunits
+        url: `/payments/create?total=${TotalPrice * 100}`,
+      });
+      setClientSecret(response.data.clientSecret);
+    };
 
-    }, [TotalPrice]);
+    getClientSecret()
+      .then((response) => {
+        setClientSecret(response.data.clientSecret);
+      })
+      .catch(() => {});
+
+    const getClientSecret2 = async () => {
+      const response = await axios({
+        method: "get",
+        // Stripe expects the total in a currencies subunits
+        url: `/willson`,
+      });
+      setClientSecret2(response.data);
+    };
+    getClientSecret2()
+      .then((response) => {
+        // setClientSecret2(response.data.clientSecret)
+      })
+      .catch(() => {});
+  }, [TotalPrice]);
 
   console.log("The Client Secret Is >>>" + clientSecret);
-    console.log("The Client Secret 2 Is >>>" + clientSecret2);
-  
+  console.log("The Client Secret 2 Is >>>" + clientSecret2);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -226,26 +213,23 @@ function Cart() {
       setProcessing(true);
     }
 
-  
-
-
-     const result = await stripe.confirmCardPayment(clientSecret, {
+    const result = await stripe.confirmCardPayment(clientSecret, {
       payment_method: {
         card: elements.getElement(CardElement),
         billing_details: {
-          name: 'Wilson Rosen',
+          name: "Wilson Rosen",
         },
-      }
+      },
     });
 
-    console.log("Payment Intent result-->"+result);
+    console.log("Payment Intent result-->" + result);
     if (result.error) {
       // Show error to your customer (e.g., insufficient funds)
       console.log(result.error.message);
       setError(result.error);
     } else {
       // The payment has been processed!
-      if (result.paymentIntent.status === 'succeeded') {
+      if (result.paymentIntent.status === "succeeded") {
         setPaymentMethod(result.paymentIntent.id);
         // Show a success message to your customer
         // There's a risk of the customer closing the window before callback
@@ -253,26 +237,23 @@ function Cart() {
         // payment_intent.succeeded event that handles any business critical
         // post-payment actions.
 
-       // 1) Empty the basket on Sucessful Compleetion of FaJediOrder
+        // 1) Empty the basket on Sucessful Compleetion of FaJediOrder
         //2) Put orders details into the DB
         //3) Redirect User to Orders Page
 
-        
-        db.collection('users')
+        db.collection("users")
           .doc(user.displayName)
-              .collection('orders')
-              .doc(result.paymentIntent.id)
-              .set({
-                  basket: Basket,
-                  amount: result.paymentIntent.amount,
-                  created: result.paymentIntent.created
-              });
-        
-        history.replace('/orders');
+          .collection("orders")
+          .doc(result.paymentIntent.id)
+          .set({
+            basket: Basket,
+            amount: result.paymentIntent.amount,
+            created: result.paymentIntent.created,
+          });
 
-      
+        history.replace("/orders");
 
-       /* const sendMail = async () => {
+        /* const sendMail = async () => {
             const response = await axios({
                 method: 'post',
                 //Stripe expects the total in a currencies subunits
@@ -280,29 +261,30 @@ function Cart() {
             })
         }
         */
-       let basketStringfied=JSON.stringify(Basket);
-      
-         const sendMail = async () => {
-           const response = await axios.post('/sendOrderSucessMail/create',{ 'User': user.displayName, 'BasketItems': basketStringfied},{
-    headers: {
-    'Content-Type': 'application/json'
-    }
-  });
-        }
+        let basketStringfied = JSON.stringify(Basket);
 
-          sendMail().then( ( response ) => {
+        const sendMail = async () => {
+          const response = await axios.post(
+            "/sendOrderSucessMail/create",
+            { User: user.displayName, BasketItems: basketStringfied },
+            {
+              headers: {
+                "Content-Type": "application/json",
+              },
+            }
+          );
+        };
+
+        sendMail()
+          .then((response) => {
             console.log("Mail sent SucessFully");
-            } )
-            .catch( () => {
-                
-            });
-
-
+          })
+          .catch(() => {});
       }
     }
 
     setProcessing(false);
-/*
+    /*
     if (payload.error) {
       setError(payload.error);
     } else {
@@ -318,133 +300,138 @@ function Cart() {
     setBillingDetails({
       email: "",
       phone: "",
-      name: ""
+      name: "",
     });
   };
- 
 
-    const classes = useStyles();
-    return (
-        <>
-        {/*
+  const classes = useStyles();
+  return (
+    <>
+      {/*
         <h1>your cart is empty !! Continue Shopping</h1>
         <div className={classes.root}>
         </div>
         */}
-    <div className="payment">
-      <div className="payment__container">
-        <h1>
-          Checkout
-          <Link to="/checkout">{BasketLength} items</Link>
-        </h1>
+      <div className="payment">
+        <div className="payment__container">
+          <h1>
+            Checkout
+            <Link to="/checkout">{BasketLength} items</Link>
+          </h1>
 
-        <div className="payment__section">
-          <div className="payment__title">
-            <h3>Delivery Address</h3>
+          <div className="payment__section">
+            <div className="payment__title">
+              <h3>Delivery Address</h3>
+            </div>
+            <div className="payment__address">
+              <p>{/* user?.email */}</p>
+              <p>77 React Lane</p>
+              <p>JS Lib</p>
+              <p>Js,web</p>
+            </div>
           </div>
-          <div className="payment__address">
-            <p>{/* user?.email */}</p>
-            <p>77 React Lane</p>
-            <p>JS Lib</p>
-            <p>Js,web</p>
+
+          <div className="payment__section">
+            <div className="payment__title">
+              <h3>Review items and Delivery</h3>
+            </div>
+            <div className="payment__items">
+              <CartTable />
+            </div>
+          </div>
+
+          <div className="payment__section">
+            <div className="payment__title">
+              <h3>Payment Section</h3>
+            </div>
+            <div className="payment__details">
+              {/*<CheckoutForm /> */}
+
+              {paymentMethod ? (
+                <div className="Result">
+                  <div className="ResultTitle" role="alert">
+                    Payment successful
+                  </div>
+                  <div className="ResultMessage">
+                    Thanks for trying Stripe Elements. No money was charged, but
+                    we generated a PaymentMethod: {paymentMethod.id}
+                  </div>
+                  <ResetButton onClick={reset} />
+                </div>
+              ) : (
+                <form className="Form" onSubmit={handleSubmit}>
+                  <fieldset className="FormGroup">
+                    <Field
+                      label="Name"
+                      id="name"
+                      type="text"
+                      placeholder="Jane Doe"
+                      required
+                      autoComplete="name"
+                      value={billingDetails.name}
+                      onChange={(e) => {
+                        setBillingDetails({
+                          ...billingDetails,
+                          name: e.target.value,
+                        });
+                      }}
+                    />
+                    <Field
+                      label="Email"
+                      id="email"
+                      type="email"
+                      placeholder="janedoe@gmail.com"
+                      required
+                      autoComplete="email"
+                      value={billingDetails.email}
+                      onChange={(e) => {
+                        setBillingDetails({
+                          ...billingDetails,
+                          email: e.target.value,
+                        });
+                      }}
+                    />
+                    <Field
+                      label="Phone"
+                      id="phone"
+                      type="tel"
+                      placeholder="(941) 555-0123"
+                      required
+                      autoComplete="tel"
+                      value={billingDetails.phone}
+                      onChange={(e) => {
+                        setBillingDetails({
+                          ...billingDetails,
+                          phone: e.target.value,
+                        });
+                      }}
+                    />
+                  </fieldset>
+                  <fieldset className="FormGroup">
+                    <CardField
+                      onChange={(e) => {
+                        setError(e.error);
+                        setCardComplete(e.complete);
+                      }}
+                    />
+                  </fieldset>
+                  {error && <ErrorMessage>{error.message}</ErrorMessage>}
+                  <SubmitButton
+                    processing={processing}
+                    error={error}
+                    disabled={!stripe}
+                  >
+                    Pay $ {TotalPrice}
+                  </SubmitButton>
+                </form>
+              )}
+            </div>
           </div>
         </div>
-
-        <div className="payment__section">
-          <div className="payment__title">
-            <h3>Review items and Delivery</h3>
-          </div>
-          <div className="payment__items">
-          <CartTable/>
-        
-          </div>
-        </div>
-
-        <div className="payment__section">
-          <div className="payment__title">
-            <h3>Payment Section</h3>
-          </div>
-                <div className="payment__details">
-                  {/*<CheckoutForm /> */} 
-                  
-                  {paymentMethod ? (
-                    <div className="Result">
-                      <div className="ResultTitle" role="alert">
-                        Payment successful
       </div>
-                      <div className="ResultMessage">
-                        Thanks for trying Stripe Elements. No money was charged, but we
-        generated a PaymentMethod: {paymentMethod.id}
-                      </div>
-                      <ResetButton onClick={reset} />
-                    </div>
-                  ) : (
-                    <form className="Form" onSubmit={handleSubmit}>
-                      <fieldset className="FormGroup">
-                        <Field
-                          label="Name"
-                          id="name"
-                          type="text"
-                          placeholder="Jane Doe"
-                          required
-                          autoComplete="name"
-                          value={billingDetails.name}
-                          onChange={(e) => {
-                            setBillingDetails({ ...billingDetails, name: e.target.value });
-                          }}
-                        />
-                        <Field
-                          label="Email"
-                          id="email"
-                          type="email"
-                          placeholder="janedoe@gmail.com"
-                          required
-                          autoComplete="email"
-                          value={billingDetails.email}
-                          onChange={(e) => {
-                            setBillingDetails({ ...billingDetails, email: e.target.value });
-                          }}
-                        />
-                        <Field
-                          label="Phone"
-                          id="phone"
-                          type="tel"
-                          placeholder="(941) 555-0123"
-                          required
-                          autoComplete="tel"
-                          value={billingDetails.phone}
-                          onChange={(e) => {
-                            setBillingDetails({ ...billingDetails, phone: e.target.value });
-                          }}
-                        />
-                      </fieldset>
-                      <fieldset className="FormGroup">
-                        <CardField
-                          onChange={(e) => {
-                            setError(e.error);
-                            setCardComplete(e.complete);
-                          }}
-                        />
-                      </fieldset>
-                      {error && <ErrorMessage>{error.message}</ErrorMessage>}
-                      <SubmitButton processing={processing} error={error} disabled={!stripe}>
-                        Pay $ {TotalPrice}
-                      </SubmitButton>
-                    </form>
-                  )}
-                  
-          </div>
-        </div>
-
-            
-      </div>
-    </div>
-    <Paper>
-    
-    </Paper>
-
-        </>
-    )
+      <Paper></Paper>
+    </>
+  );
 }
 
-export default Cart
+export default Cart;

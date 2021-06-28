@@ -54,23 +54,23 @@ app.post("/payments/create", async (request, response) => {
 });
 
 app.post("/sendOrderSucessMail/create", (req, res) => {
-  const UserName = req.body.User;
+  // const UserName = req.body.User;
 
   console.log("Re uery ");
   //console.log(req.query);
   console.log(req.body);
   // console.log(req.params);
-  console.log("UserName", UserName);
+  //console.log("UserName", UserName);
   const Basket = req.body.BasketItems;
-  console.log("Bakset Items", Basket);
-  // var str1 = JSON.stringify(Basket);
-  // console.log('Bakset Items atewr striny', str1);
+  //console.log("Bakset Items", Basket);
   const basket2 = JSON.parse(Basket);
-  //console.log('Bakset Items ater parsin', basket2);
-  //console.log(typeof(basket2));
 
-  // var t = [...Basket]
   console.log(typeof basket2);
+
+  const UserDetails = req.body.UserDetails;
+  //console.log("UserName1-->", UserName);
+  const UserDetails2 = JSON.parse(UserDetails);
+  //console.log("UserName-->", UserName2);
 
   var x = basket2.reduce((row, nextitem) => {
     return (
@@ -98,8 +98,8 @@ app.post("/sendOrderSucessMail/create", (req, res) => {
   const Organiser = req.body.Organiser;
   */
 
-  const toUser = "vermawillson@gmail.com";
-  const Mbody = "InterviewAlly Booking";
+  const toUser = UserDetails2.email;
+  const Mbody = "InterviewAlly";
   //const UserName="Willson";
   const EventStartTime = "eedf";
   const EventEndTime = "sfsd";
@@ -126,11 +126,11 @@ app.post("/sendOrderSucessMail/create", (req, res) => {
 <table style=" border-collapse:collapse;width:700px;height:50px; ">
 <tr>
 <td colspan=3 style="padding:8px;"><font face="calibri" size="3">Dear ` +
-    UserName +
+    UserDetails2.name +
     ` </font></td>
 </tr>
 <tr>
-<td colspan=3 style="padding:8px;"><font face="calibri" size="3">This is to inform you that,you have sucessfully booked the Event : ` +
+<td colspan=3 style="padding:8px;"><font face="calibri" size="3">This is to inform you that,you have sucessfully registered for the following the courses at ` +
     Mbody +
     `</Font></td>
 </tr>
@@ -155,7 +155,7 @@ app.post("/sendOrderSucessMail/create", (req, res) => {
 <td colspan=3 ><font face="calibri" size="3">InterviewAlly Team</font></td>
 </tr>
 <tr>
-<td><font face="calibri" size="3">Email: <a href="mailto:">/a></font></td>
+<td><font face="calibri" size="3">Email: <a href="mailto:"></a></font></td>
 </tr>
 </table>
 

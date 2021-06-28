@@ -262,11 +262,16 @@ function Cart() {
         }
         */
         let basketStringfied = JSON.stringify(Basket);
+        let UserDetails = JSON.stringify(billingDetails);
 
         const sendMail = async () => {
           const response = await axios.post(
             "/sendOrderSucessMail/create",
-            { User: user.displayName, BasketItems: basketStringfied },
+            {
+              User: user.displayName,
+              BasketItems: basketStringfied,
+              UserDetails: UserDetails,
+            },
             {
               headers: {
                 "Content-Type": "application/json",
